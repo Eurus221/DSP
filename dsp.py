@@ -37,6 +37,32 @@ def ReadSignalFile(file_name):
     print(indices)
     print(samples)
     return indices, samples
+import os
+from tkinter import filedialog
+
+def WriteSignalFile(indices, samples,size):
+    # Get the current working directory (project directory)
+    project_directory = os.getcwd()
+
+    # Prompt user to choose where to save the file, opening in the project directory
+    file_path = filedialog.asksaveasfilename(
+        initialdir=project_directory,  # Open the dialog in the project directory
+        defaultextension=".txt",  # Ensures the file is saved as a .txt file
+        filetypes=(("Text files", "*.txt"), ("All files", "*.*"))
+    )
+
+    if file_path:  # Proceed only if a file path was selected
+        with open(file_path, 'w') as f:
+            # Optionally, write the two initial zeros if needed
+            f.write('0\n0\n')  # Writing the two zeros at the beginning
+            f.write(f"{size}\n")
+            # Write the signal data
+            for i, s in zip(indices, samples):
+                f.write(f"{i} {s}\n")  # Write the index and sample, separated by space
+
+        print(f"Signal written to {file_path}")
+    else:
+        print("No file path selected. Operation canceled.")
 
 # Function to open a file and read the signal
 def open_file(file_num):
@@ -67,10 +93,19 @@ def operations(ind1, samp1, ind2, samp2, operation_type):
         result_samples= [signal1[i] + signal2[i] for i in result_indices]
     elif operation_type == 2:
         result_samples= [signal1[i] - signal2[i] for i in result_indices]
-    elif operation_type == 3:
-        result_samples= [signal1[i] * signal2[i] for i in result_indices]
+    WriteSignalFile(result_indices,result_samples,len(result_samples))
     print("result indices",result_indices)
     print("result samples",result_samples)
+    
+def multiply(ind, samp, val):
+    global result_indices, result_samples
+    signal= dict(zip(ind,samp))
+    result_indices = ind
+    result_samples = [signal[i] * float(val) for i in result_indices]
+    WriteSignalFile(result_indices,result_samples,len(result_samples))
+    print("result indices", result_indices)
+    print("result samples", result_samples)
+
 
 def display(ind1=0,samp1=0,ind2=0,samp2=0,coord=1):
     if coord==1:
@@ -92,10 +127,11 @@ def display(ind1=0,samp1=0,ind2=0,samp2=0,coord=1):
         plt.legend()
         plt.grid(True)
         plt.show()
+    
 
 def delay_advance(ind,samp,delayValue,coord):
     global result_indices,result_samples
-    delayValue=float(delayValue)
+    delayValue=int(delayValue)
     l=len(ind)
     if coord == 1:
         result_indices=[i + delayValue for i in ind]
@@ -114,7 +150,9 @@ def delay_advance(ind,samp,delayValue,coord):
             result_indices.append(ind[l-i-1]*-1)
             result_samples.append(samp[l-i-1])
         print(result_indices)
-        print(result_samples)        
+        print(result_samples)  
+    WriteSignalFile(result_indices,result_samples,len(result_samples))
+          
 # Configure rows and columns for centering
 gui.grid_columnconfigure(0, weight=1)  # Center everything by expanding column 0
 gui.grid_columnconfigure(1, weight=1)  # Center everything by expanding column 1
@@ -137,8 +175,8 @@ subtBtnTxt = "Subtract 2 signals"
 subtBtn = tk.Button(gui, text=subtBtnTxt, command=lambda: operations(indices1, samples1, indices2, samples2, 2), bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
 subtBtn.grid(row=2, column=0, columnspan=2, pady=10, ipadx=10, ipady=5)
 
-multBtnTxt = "Multiply 2 signals"
-multBtn = tk.Button(gui, text=multBtnTxt, command=lambda: operations(indices1, samples1, indices2, samples2, 3), bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
+multBtnTxt = "Multiply signal"
+multBtn = tk.Button(gui, text=multBtnTxt, command=lambda: multiply(indices1,samples1,delay_value), bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
 multBtn.grid(row=3, column=0, columnspan=2, pady=10, ipadx=10, ipady=5)
 # Label for value to delay or advance, centered across both columns
 title_label = tk.Label(gui, text="Value to delay or advance of first signal", font=("Arial", 16, "bold"), bg="#1e1e1e", fg="#ffffff")
