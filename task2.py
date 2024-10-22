@@ -16,11 +16,11 @@ def gen_waves(wave_type, amp, theta, analog_freq, sampling_freq):
     
     if wave_type == 0:  # Sine wave
         analogWave = amp * np.sin(2 * np.pi * analog_freq * t + theta)
-        discreteWave = amp * np.sin(2 * np.pi * analog_freq / sampling_freq * n + theta)
+        discreteWave = amp * np.sin(2 * np.pi * analog_freq  * n + theta)
         display(analogWave, discreteWave, n, t)
     elif wave_type == 1:  # Cosine wave
         analogWave = amp * np.cos(2 * np.pi * analog_freq * t + theta)
-        discreteWave = amp * np.cos(2 * np.pi * analog_freq / sampling_freq * n + theta)
+        discreteWave = amp * np.cos(2 * np.pi * analog_freq * n + theta)
         display(analogWave, discreteWave, n, t)
 
 def display(analogWave, discreteWave, n, t):

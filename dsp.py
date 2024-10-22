@@ -234,6 +234,7 @@ def display(ind1=0,samp1=0,ind2=0,samp2=0,coord=1):
     if coord==1:
         plt.figure(figsize=(10, 6))
         plt.plot(ind1, samp1, label='Original signal')
+        plt.stem(ind1, samp1, linefmt='r-', markerfmt='ro', basefmt=" ", label="Original signal")
         plt.xlabel('Time (s)')
         plt.ylabel('Amplitude')
         plt.title('Signal Plot')
@@ -243,7 +244,8 @@ def display(ind1=0,samp1=0,ind2=0,samp2=0,coord=1):
 
     elif coord == 2:
         plt.figure(figsize=(10, 6))
-        plt.plot(ind2, samp2, label='Result signal')
+        plt.plot(result_indices, result_indices, label='Result signal')
+        #plt.stem(result_indices, result_indices, linefmt='r-', markerfmt='ro', basefmt=" ", label="Result")
         plt.xlabel('Time (s)')
         plt.ylabel('Amplitude')
         plt.title('Signal Plot')
