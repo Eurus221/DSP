@@ -4,6 +4,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 
+
 # Create the main window
 gui = tk.Tk()
 gui.title("Signal Reading and Processing Simulation")
@@ -85,14 +86,67 @@ def open_file(file_num):
 # Function for performing operations (add or subtract)
 def operations(ind1, samp1, ind2, samp2, operation_type):
     global result_indices,result_samples
-    signal1 = dict(zip(ind1, samp1))
-    signal2 = dict(zip(ind2, samp2))
-    result_indices = sorted(set(ind1).intersection(set(ind2)))
-
+    i, j = 0, 0
     if operation_type == 1:
-        result_samples= [signal1[i] + signal2[i] for i in result_indices]
+        while i < len(ind1) and j < len(ind2):
+            if ind1[i] == ind2[j]:
+                # Matching indices, add the samples
+                result_indices.append(ind1[i])
+                result_samples.append(samp1[i] + samp2[j])
+                i += 1
+                j += 1
+            elif ind1[i] < ind2[j]:
+                # Append the sample from ind1 as ind1[i] < ind2[j]
+                result_indices.append(ind1[i])
+                result_samples.append(samp1[i])
+                i += 1
+            else:
+                # Append the sample from ind2 as ind2[j] < ind1[i]
+                result_indices.append(ind2[j])
+                result_samples.append(samp2[j])
+                j += 1
+        
+        # Step 2: Append remaining elements from ind1 or ind2
+        while i < len(ind1):
+            result_indices.append(ind1[i])
+            result_samples.append(samp1[i])
+            i += 1
+        
+        while j < len(ind2):
+            result_indices.append(ind2[j])
+            result_samples.append(samp2[j])
+            j += 1
+        AddSignalSamplesAreEqual("Signal1.txt","Signal2.txt",result_indices,result_samples)
     elif operation_type == 2:
-        result_samples= [signal1[i] - signal2[i] for i in result_indices]
+        while i < len(ind1) and j < len(ind2):
+            if ind1[i] == ind2[j]:
+                # Matching indices, add the samples
+                result_indices.append(ind1[i])
+                result_samples.append(samp1[i] - samp2[j])
+                i += 1
+                j += 1
+            elif ind1[i] < ind2[j]:
+                # Append the sample from ind1 as ind1[i] < ind2[j]
+                result_indices.append(ind1[i])
+                result_samples.append(samp1[i])
+                i += 1
+            else:
+                # Append the sample from ind2 as ind2[j] < ind1[i]
+                result_indices.append(ind2[j])
+                result_samples.append(samp2[j])
+                j += 1
+        
+        # Step 2: Append remaining elements from ind1 or ind2
+        while i < len(ind1):
+            result_indices.append(ind1[i])
+            result_samples.append(samp1[i])
+            i += 1
+        
+        while j < len(ind2):
+            result_indices.append(ind2[j])
+            result_samples.append(samp2[j])
+            j += 1
+        SubSignalSamplesAreEqual("Signal1.txt","Signal2.txt",result_indices,result_samples)
     WriteSignalFile(result_indices,result_samples,len(result_samples))
     print("result indices",result_indices)
     print("result samples",result_samples)
@@ -103,9 +157,50 @@ def multiply(ind, samp, val):
     result_indices = ind
     result_samples = [signal[i] * float(val) for i in result_indices]
     WriteSignalFile(result_indices,result_samples,len(result_samples))
+    MultiplySignalByConst(float(val),result_indices,result_samples)
     print("result indices", result_indices)
     print("result samples", result_samples)
 
+def AddSignalSamplesAreEqual(userFirstSignal,userSecondSignal,Your_indices,Your_samples):
+    if(userFirstSignal=='Signal1.txt' and userSecondSignal=='Signal2.txt'):
+        file_name="add.txt"  # write here the path of the add output file
+    expected_indices,expected_samples=ReadSignalFile(file_name)          
+    if (len(expected_samples)!=len(Your_samples)) and (len(expected_indices)!=len(Your_indices)):
+        print("Addition Test case failed, your signal have different length from the expected one")
+        return
+    for i in range(len(Your_indices)):
+        if(Your_indices[i]!=expected_indices[i]):
+            print("Addition Test case failed, your signal have different indicies from the expected one") 
+            return
+    for i in range(len(expected_samples)):
+        if abs(Your_samples[i] - expected_samples[i]) < 0.01:
+            continue
+        else:
+            print("Addition Test case failed, your signal have different values from the expected one") 
+            return
+    print("Addition Test case passed successfully")
+
+def ShiftSignalByConst(Shift_value,Your_indices,Your_samples):
+    if(Shift_value==3):  #x(n+k)
+        file_name="advance3.txt" # write here the path of delay3 output file
+    elif(Shift_value==-3): #x(n-k)
+        file_name="delay3.txt" # write here the path of advance3 output file
+        
+    expected_indices,expected_samples=ReadSignalFile(file_name)      
+    if (len(expected_samples)!=len(Your_samples)) and (len(expected_indices)!=len(Your_indices)):
+        print("Shift by "+str(Shift_value)+" Test case failed, your signal have different length from the expected one")
+        return
+    for i in range(len(Your_indices)):
+        if(Your_indices[i]!=expected_indices[i]):
+            print("Shift by "+str(Shift_value)+" Test case failed, your signal have different indicies from the expected one") 
+            return
+    for i in range(len(expected_samples)):
+        if abs(Your_samples[i] - expected_samples[i]) < 0.01:
+            continue
+        else:
+            print("Shift by "+str(Shift_value)+" Test case failed, your signal have different values from the expected one") 
+            return
+    print("Shift by "+str(Shift_value)+" Test case passed successfully")
 
 def display(ind1=0,samp1=0,ind2=0,samp2=0,coord=1):
     if coord==1:
@@ -127,22 +222,81 @@ def display(ind1=0,samp1=0,ind2=0,samp2=0,coord=1):
         plt.legend()
         plt.grid(True)
         plt.show()
-    
 
+def MultiplySignalByConst(User_Const,Your_indices,Your_samples):
+    if(User_Const==5):
+        file_name="mul5.txt"  # write here the path of the mul5 output file
+        
+    expected_indices,expected_samples=ReadSignalFile(file_name)      
+    if (len(expected_samples)!=len(Your_samples)) and (len(expected_indices)!=len(Your_indices)):
+        print("Multiply by "+str(User_Const)+ " Test case failed, your signal have different length from the expected one")
+        return
+    for i in range(len(Your_indices)):
+        if(Your_indices[i]!=expected_indices[i]):
+            print("Multiply by "+str(User_Const)+" Test case failed, your signal have different indicies from the expected one") 
+            return
+    for i in range(len(expected_samples)):
+        if abs(Your_samples[i] - expected_samples[i]) < 0.01:
+            continue
+        else:
+            print("Multiply by "+str(User_Const)+" Test case failed, your signal have different values from the expected one") 
+            return
+    print("Multiply by "+str(User_Const)+" Test case passed successfully")
+
+def SubSignalSamplesAreEqual(userFirstSignal,userSecondSignal,Your_indices,Your_samples):
+    if(userFirstSignal=='Signal1.txt' and userSecondSignal=='Signal2.txt'):
+        file_name="subtract.txt" # write here the path of the subtract output file
+        
+    expected_indices,expected_samples=ReadSignalFile(file_name)   
+    
+    if (len(expected_samples)!=len(Your_samples)) and (len(expected_indices)!=len(Your_indices)):
+        print("Subtraction Test case failed, your signal have different length from the expected one")
+        return
+    for i in range(len(Your_indices)):
+        if(Your_indices[i]!=expected_indices[i]):
+            print("Subtraction Test case failed, your signal have different indicies from the expected one") 
+            return
+    for i in range(len(expected_samples)):
+        if abs(Your_samples[i] - expected_samples[i]) < 0.01:
+            continue
+        else:
+            print("Subtraction Test case failed, your signal have different values from the expected one") 
+            return
+    print("Subtraction Test case passed successfully")
+   
+def Folding(Your_indices,Your_samples):
+    file_name = "folding.txt"  # write here the path of the folding output file
+    expected_indices,expected_samples=ReadSignalFile(file_name)      
+    if (len(expected_samples)!=len(Your_samples)) and (len(expected_indices)!=len(Your_indices)):
+        print("Folding Test case failed, your signal have different length from the expected one")
+        return
+    for i in range(len(Your_indices)):
+        if(Your_indices[i]!=expected_indices[i]):
+            print("Folding Test case failed, your signal have different indicies from the expected one") 
+            return
+    for i in range(len(expected_samples)):
+        if abs(Your_samples[i] - expected_samples[i]) < 0.01:
+            continue
+        else:
+            print("Folding Test case failed, your signal have different values from the expected one") 
+            return
+    print("Folding Test case passed successfully")
 def delay_advance(ind,samp,delayValue,coord):
     global result_indices,result_samples
     delayValue=int(delayValue)
     l=len(ind)
     if coord == 1:
-        result_indices=[i + delayValue for i in ind]
+        result_indices=[i - delayValue for i in ind]
         result_samples=samp
         print(result_indices)
         print(result_samples)
+        ShiftSignalByConst(delayValue,result_indices,result_samples)
     elif coord == 2:
-        result_indices=[i-delayValue for i in ind]
+        result_indices=[i+delayValue for i in ind]
         result_samples=samp
         print(result_indices)
         print(result_samples)
+        ShiftSignalByConst(-delayValue,result_indices,result_samples)
     elif coord == 3:
         result_indices=[]
         result_samples=[]
@@ -151,6 +305,7 @@ def delay_advance(ind,samp,delayValue,coord):
             result_samples.append(samp[l-i-1])
         print(result_indices)
         print(result_samples)  
+        Folding(result_indices,result_samples)
     WriteSignalFile(result_indices,result_samples,len(result_samples))
           
 # Configure rows and columns for centering
