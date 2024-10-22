@@ -5,22 +5,11 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 
 
-# Create the main window
-gui = tk.Tk()
-gui.title("Signal Reading and Processing Simulation")
-gui.geometry("1000x700")
-gui.config(bg="#1e1e1e")
-
 signal = []
 indices1, samples1, indices2, samples2 = [], [], [], []  # Variables to store the signals
 
 result_indices,result_samples=[],[]
 delay_value=0
-# Define function to retrieve input from Entry
-def retrieve_input():
-    global delay_value
-    delay_value = entry.get()
-    print(delay_value)
 
 # Function to read and return signal data
 def ReadSignalFile(file_name):
@@ -40,7 +29,46 @@ def ReadSignalFile(file_name):
     return indices, samples
 import os
 from tkinter import filedialog
+def task1_window():
+    # Create the main window
+    gui = tk.Toplevel()
+    gui.title("Signal Reading and Processing Simulation")
+    gui.geometry("1000x700")
+    gui.config(bg="#1e1e1e")
 
+
+    # GUI setup for buttons, labels, and entry
+    gui.grid_columnconfigure(0, weight=1)
+    gui.grid_columnconfigure(1, weight=1)
+
+    openfile1 = tk.Button(gui, text="Choose First File", command=lambda: open_file(1), bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
+    openfile1.grid(row=0, column=0, padx=10, pady=20, ipadx=10, ipady=5, sticky="e")
+
+    openfile2 = tk.Button(gui, text="Choose Second File", command=lambda: open_file(2), bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
+    openfile2.grid(row=0, column=1, padx=10, pady=20, ipadx=10, ipady=5, sticky="w")
+
+    addbtn = tk.Button(gui, text="Add 2 signals", command=lambda: operations(indices1, samples1, indices2, samples2, 1), bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
+    addbtn.grid(row=1, column=0, columnspan=2, pady=10, ipadx=10, ipady=5)
+
+    subtbtn = tk.Button(gui, text="Subtract 2 signals", command=lambda: operations(indices1, samples1, indices2, samples2, 2), bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
+    subtbtn.grid(row=2, column=0, columnspan=2, pady=10, ipadx=10, ipady=5)
+
+    multbtn = tk.Button(gui, text="Multiply signal", command=lambda: multiply(indices1, samples1, entry.get()), bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
+    multbtn.grid(row=3, column=0, columnspan=2, pady=10, ipadx=10, ipady=5)
+
+    delaybtn = tk.Button(gui, text="Delay signal", command=lambda: delay_advance(indices1, samples1, entry.get(), 1), bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
+    delaybtn.grid(row=4, column=0, columnspan=2, pady=10, ipadx=10, ipady=5)
+
+    entry = tk.Entry(gui, width=20, font=("Arial", 12))
+    entry.grid(row=5, column=0, columnspan=2, pady=10)
+
+    displaybtn1 = tk.Button(gui, text="Display Original Signal", command=lambda: display(indices1, samples1, coord=1), bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
+    displaybtn1.grid(row=6, column=0, pady=10, ipadx=10, ipady=5)
+
+    displaybtn2 = tk.Button(gui, text="Display Result Signal", command=lambda: display(result_indices, result_samples, coord=2), bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
+    displaybtn2.grid(row=6, column=1, pady=10, ipadx=10, ipady=5)
+
+    gui.mainloop()
 def WriteSignalFile(indices, samples,size):
     # Get the current working directory (project directory)
     project_directory = os.getcwd()
@@ -307,66 +335,4 @@ def delay_advance(ind,samp,delayValue,coord):
         print(result_samples)  
         Folding(result_indices,result_samples)
     WriteSignalFile(result_indices,result_samples,len(result_samples))
-          
-# Configure rows and columns for centering
-gui.grid_columnconfigure(0, weight=1)  # Center everything by expanding column 0
-gui.grid_columnconfigure(1, weight=1)  # Center everything by expanding column 1
-
-# Create buttons for choosing two different files, placed in row 0, columns 0 and 1
-openfiletxt1 = "Choose First File"
-openfile1 = tk.Button(gui, text=openfiletxt1, command=lambda: open_file(1), bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
-openfile1.grid(row=0, column=0, padx=10, pady=20, ipadx=10, ipady=5, sticky="e")
-
-openfiletxt2 = "Choose Second File"
-openfile2 = tk.Button(gui, text=openfiletxt2, command=lambda: open_file(2), bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
-openfile2.grid(row=0, column=1, padx=10, pady=20, ipadx=10, ipady=5, sticky="w")
-
-# Create buttons for operations, centered across both columns
-addbtntxt = "Add 2 signals"
-addbtn = tk.Button(gui, text=addbtntxt, command=lambda: operations(indices1, samples1, indices2, samples2, 1), bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
-addbtn.grid(row=1, column=0, columnspan=2, pady=10, ipadx=10, ipady=5)
-
-subtBtnTxt = "Subtract 2 signals"
-subtBtn = tk.Button(gui, text=subtBtnTxt, command=lambda: operations(indices1, samples1, indices2, samples2, 2), bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
-subtBtn.grid(row=2, column=0, columnspan=2, pady=10, ipadx=10, ipady=5)
-
-multBtnTxt = "Multiply signal"
-multBtn = tk.Button(gui, text=multBtnTxt, command=lambda: multiply(indices1,samples1,delay_value), bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
-multBtn.grid(row=3, column=0, columnspan=2, pady=10, ipadx=10, ipady=5)
-# Label for value to delay or advance, centered across both columns
-title_label = tk.Label(gui, text="Value to delay or advance of first signal", font=("Arial", 16, "bold"), bg="#1e1e1e", fg="#ffffff")
-title_label.grid(row=4, column=0, columnspan=2, pady=2)
-
-# Create a frame to hold the Entry and Button next to each other, centered across both columns
-frame = tk.Frame(gui, bg="#1e1e1e")
-frame.grid(row=5, column=0, columnspan=2, pady=(5, 0))
-
-# Create an Entry widget for single-line input, inside the frame
-entry = tk.Entry(frame, font=("Arial", 12), bg="#333333", fg="#ffffff", insertbackground="#ffffff")
-entry.pack(side="left", padx=10, ipadx=10, ipady=5)
-
-# Create a button to read the input, inside the frame
-read_input_button = tk.Button(frame, text="Read Input", command=retrieve_input, bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
-read_input_button.pack(side="left", ipadx=10, ipady=5)
-
-delaytxt="Delay Signal"
-delayBtn=tk.Button(gui,text=delaytxt,command= lambda:delay_advance(indices1,samples1,delay_value,1),bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
-delayBtn.grid(row=6,column=0,padx=10, pady=20, ipadx=10, ipady=5, sticky="e")
-
-advancetxt="Advance Signal"
-advanceBtn=tk.Button(gui,text=advancetxt,command= lambda:delay_advance(indices1,samples1,delay_value,2),bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
-advanceBtn.grid(row=6,column=1,padx=10, pady=20, ipadx=10, ipady=5, sticky="w")
-
-foldtxt="Fold Signal"
-advanceBtn=tk.Button(gui,text=foldtxt,command= lambda:delay_advance(indices1,samples1,delay_value,3),bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
-advanceBtn.grid(row=6,column=2,padx=10, pady=20, ipadx=10, ipady=5, sticky="e")
-
-displayOriginalSignaltxt="Display Original Signal"
-displayOriginalSignalBtn=tk.Button(gui,text=displayOriginalSignaltxt,command= lambda:display(indices1,samples1),bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
-displayOriginalSignalBtn.grid(row=7,column=0,padx=10, pady=20, ipadx=10, ipady=5, sticky="e")
-
-displayresultTxt="Display Result Signal"
-displayResultBtn=tk.Button(gui,text=displayresultTxt,command= lambda:display(indices1,samples1,result_indices,result_samples,2),bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
-displayResultBtn.grid(row=7,column=1,padx=10, pady=20, ipadx=10, ipady=5, sticky="w")
-# Start the main loop
-gui.mainloop()
+ 
