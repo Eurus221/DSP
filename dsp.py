@@ -62,10 +62,10 @@ def task1_window():
     entry = tk.Entry(gui, width=20, font=("Arial", 12))
     entry.grid(row=5, column=0, columnspan=2, pady=10)
 
-    displaybtn1 = tk.Button(gui, text="Display Original Signal", command=lambda: display(indices1, samples1, coord=1), bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
+    displaybtn1=tk.Button(gui,text="Display Original Signal",command= lambda:display(indices1,samples1),bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
     displaybtn1.grid(row=6, column=0, pady=10, ipadx=10, ipady=5)
 
-    displaybtn2 = tk.Button(gui, text="Display Result Signal", command=lambda: display(result_indices, result_samples, coord=2), bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
+    displaybtn2=tk.Button(gui,text="displayresultTxt",command= lambda:display(indices1,samples1,result_indices,result_samples,2),bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
     displaybtn2.grid(row=6, column=1, pady=10, ipadx=10, ipady=5)
 
     gui.mainloop()
@@ -234,7 +234,7 @@ def display(ind1=0,samp1=0,ind2=0,samp2=0,coord=1):
     if coord==1:
         plt.figure(figsize=(10, 6))
         plt.plot(ind1, samp1, label='Original signal')
-        plt.stem(ind1, samp1, linefmt='r-', markerfmt='ro', basefmt=" ", label="Original signal")
+        plt.stem(ind1, samp1, linefmt='r-', markerfmt='ro', basefmt=" ", label="Discrete")
         plt.xlabel('Time (s)')
         plt.ylabel('Amplitude')
         plt.title('Signal Plot')
@@ -244,15 +244,14 @@ def display(ind1=0,samp1=0,ind2=0,samp2=0,coord=1):
 
     elif coord == 2:
         plt.figure(figsize=(10, 6))
-        plt.plot(result_indices, result_indices, label='Result signal')
-        #plt.stem(result_indices, result_indices, linefmt='r-', markerfmt='ro', basefmt=" ", label="Result")
+        plt.plot(ind2, samp2, label='Result signal')
+        plt.stem(ind2, samp2, linefmt='r-', markerfmt='ro', basefmt=" ", label="Result signal")
         plt.xlabel('Time (s)')
         plt.ylabel('Amplitude')
         plt.title('Signal Plot')
         plt.legend()
         plt.grid(True)
         plt.show()
-
 def MultiplySignalByConst(User_Const,Your_indices,Your_samples):
     if(User_Const==5):
         file_name="mul5.txt"  # write here the path of the mul5 output file
