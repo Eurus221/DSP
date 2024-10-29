@@ -7,6 +7,7 @@ import os
 import numpy as np
 from dsp import task1_window
 from task2 import task2_window
+from task3 import task3_window
 # Main Window to start the application
 
 
@@ -26,8 +27,11 @@ def main_window():
     task2_button = tk.Button(main_gui, text="Task 2", width=5, height=1, command=task2_window, bg="#333333", fg="#ffffff", font=("Arial", 16), activebackground="#222222", activeforeground="#ffffff")
     task2_button.grid(row=0, column=2,padx=(2,5),  pady=5)  # Place in the first row and third column (next to Task 1)
     
+    task3_button = tk.Button(main_gui, text="Task 3", width=5, height=1, command=task3_window, bg="#333333", fg="#ffffff", font=("Arial", 16), activebackground="#222222", activeforeground="#ffffff")
+    task3_button.grid(row=1, column=1,padx=(5, 2), pady=5)  # Place in the first row and second column (centered)
 
     main_gui.mainloop()
 
 # Start the application
 main_window()
+ 

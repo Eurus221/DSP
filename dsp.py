@@ -105,6 +105,7 @@ def open_file(file_num):
             if file_num == 1:
                 global indices1, samples1
                 indices1, samples1 = indices, samples
+                return indices,samples
             elif file_num == 2:
                 global indices2, samples2
                 indices2, samples2 = indices, samples
