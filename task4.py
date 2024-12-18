@@ -105,7 +105,14 @@ def compare_signal(testNum,indecies,signal):
             display(coord=2, samp2= signal,ind2=indeciesOut)
         else:
             print("failed conv")
-
+    elif(testNum==6):
+        indeciesOut,signalout=ReadSignalFile("CorrOutput.txt")
+        if(indeciesOut!=indecies):
+            print("wrong indecies")
+            return
+        if(signal==signalout):
+            print("passed Correlation")
+            display(coord=2, samp2= signal,ind2=indeciesOut)
 
 
 def task4_window():

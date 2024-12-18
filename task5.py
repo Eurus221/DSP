@@ -10,20 +10,20 @@ import tkinter as tk
 def idft_dft(decider,freq):
    x1,x=open_file(1)
    imag=-1j
-   if decider==0:
+   if decider==0:#idft
       x= comp_constructor(x1,x)
+      imag=1j
+
       print(x)
    out=[]
    for k in range(len(x)):
       sum=0
       for n in range(len(x)):
-        if decider==0:
-            imag=1j
         res=x[n]*np.exp(imag*k*2*np.pi*n/len(x))
         sum+=res 
       out.append(sum)
 
-   if decider==1:
+   if decider==1: #dft
       phase_height(out,freq)
    else:
       length=len(out)
