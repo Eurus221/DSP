@@ -65,6 +65,19 @@ def conv():
                 output[n]+=signal1[n-k]*signal2[k]
     compare_signal(5,outputIndecies,output)
     return output
+def conv2(signal1,signal2,indecies,indecies2):
+    output_length = len(signal1) + len(signal2) - 1
+    output = [0] * output_length
+    len1 = len(signal1)
+    first = indecies2[0]
+    outputIndecies = []
+    for n in range(output_length):
+        outputIndecies.append(first + n)
+        for k in range(len(signal2)):
+            if 0 <= n - k < len1:
+                output[n] += signal1[n - k] * signal2[k]
+    #compare_signal(5, outputIndecies, output)
+    return output,outputIndecies
 
 def compare_signal(testNum,indecies,signal):
     if(testNum==1):

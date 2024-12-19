@@ -35,20 +35,35 @@ def idft_dft(decider,freq):
       else: 
          print("failed IDFT !!!!!!!!!!!")
 
-    
+def idft_dft2(decider,freq,x1,x):
+   imag=-1j
+   if decider==0:#idft
+      x= comp_constructor(x1,x)
+      imag=1j
+
+      print(x)
+   out=[]
+   for k in range(len(x)):
+      sum=0
+      for n in range(len(x)):
+        res=x[n]*np.exp(imag*k*2*np.pi*n/len(x))
+        sum+=res
+      out.append(sum)
+
+   if decider==1: #dft
+      phase_height(out,freq)
+      return out
+   else:
+      length=len(out)
+      out=[i/length for i in out]
+      return out
 
 def phase_height(out,freq):
     magnitudes=[np.abs(z) for z in out]
     phases=[np.arctan2(z.imag,z.real) for z in out]
     step = (2*np.pi)/len(out)/freq
     x_axis=[i*step for i in range(len(out))]
-    ampAnswer,phaseAnswer=open_file(1)
-    if SignalComapreAmplitude(ampAnswer,magnitudes) and SignalComaprePhaseShift(phaseAnswer,phases):
-       print("passed DFT !!!!!!!!!!!!!")
-       display(coord=2, samp2=magnitudes,ind2=x_axis)
-       display(coord=2, samp2=phases,ind2=x_axis)
-    else: 
-       print("Failed DFT!!!!!!!!!!!")
+    return magnitudes,phases
 
 def comp_constructor(a,p):
     a= np.array(a)
