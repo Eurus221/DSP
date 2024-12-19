@@ -7,6 +7,9 @@ from task2 import task2_window
 from task3 import task3_window
 from task4 import task4_window
 from task5 import task5_window
+from task6 import task6_window
+from task7 import task7_window
+
 # Main Window to start the application
 
 
@@ -34,6 +37,12 @@ def main_window():
 
     task5_button = tk.Button(main_gui, text="Task 5", width=5, height=1, command=task5_window, bg="#333333", fg="#ffffff", font=("Arial", 16), activebackground="#222222", activeforeground="#ffffff")
     task5_button.grid(row=2, column=1,padx=(5, 2), pady=5)  # Place in the first row and second column (centered)
+    
+    task6_button = tk.Button(main_gui, text="Task 6", width=5, height=1, command=task6_window, bg="#333333", fg="#ffffff", font=("Arial", 16), activebackground="#222222", activeforeground="#ffffff")
+    task6_button.grid(row=2, column=2,padx=(5, 2), pady=5)  # Place in the first row and second column (centered)
+    
+    task5_button = tk.Button(main_gui, text="Task 7", width=5, height=1, command=task7_window, bg="#333333", fg="#ffffff", font=("Arial", 16), activebackground="#222222", activeforeground="#ffffff")
+    task5_button.grid(row=3, column=1,padx=(5, 2), pady=5)  # Place in the first row and second column (centered)
     
     main_gui.mainloop()
 

@@ -32,15 +32,21 @@ def corr2(signal1,signal2):
         output.append(round(correlation_value,8))
         output_indices.append(j)
     compare_signal(6, output_indices, output)
-    print(output)
     return output_indices, output
-
+def corr_test():
+    _,signal1=open_file(1)
+    _,signal2=open_file(1)
+    corr2(signal1,signal2)
+    
 def timeShift(sampling_frequency,s1,s2):
     _,output=corr2(s1,s2)
     index=output.index(max(output))
     Ts= 1/sampling_frequency
     print(index*Ts)
-
+def time_test(sampling_frequency):
+    _,signal1=open_file(1)
+    _,signal2=open_file(1)
+    timeShift(sampling_frequency,signal1,signal2)
 def maxmizer(input, directory):
     outs = []
     # Iterate over files in the directory
@@ -54,12 +60,34 @@ def maxmizer(input, directory):
     return sum(outs) / len(outs)
 
 def classify():
-    input = read_Files(r"C:\ahmed\college projects\DSP\Test Signals\Test2.txt")  # Read input signal
-    classA = maxmizer(input, r"C:\ahmed\college projects\DSP\Class 1")
-    classB = maxmizer(input, r"C:\ahmed\college projects\DSP\Class 2")
+    input = read_Files(r"C:\Users\andre\Desktop\dsp\OneDrive_2024-12-18\Correlation Task Files\point3 Files\Test Signals\Test1.txt")  # Read input signal
+    classA = maxmizer(input, r"C:\Users\andre\Desktop\dsp\OneDrive_2024-12-18\Correlation Task Files\point3 Files\Class 1")
+    classB = maxmizer(input, r"C:\Users\andre\Desktop\dsp\OneDrive_2024-12-18\Correlation Task Files\point3 Files\Class 2")
     if classA > classB:
-        print("classA")
+        print("DOWN")
     else:
-        print("classB")
+        print("UP")
 
-classify()
+
+def task6_window():
+    root = tk.Tk()
+    root.title("Dark Theme Example")
+    root.geometry("400x200")
+    root.config(bg="#1e1e1e")
+
+    # Add a text field
+    text_field = tk.Entry(root, font=("Arial", 12), width=30, bg="#333333", fg="#ffffff", insertbackground="#ffffff")
+    text_field.grid(row=0, column=0, columnspan=2, padx=20, pady=20)
+
+    # Add two buttons
+    button1 = tk.Button(root, text="correlation", command=corr_test, bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
+    button1.grid(row=1, column=0, padx=20, pady=10, ipadx=10, ipady=5)
+
+    button2 = tk.Button(root, text="time shift", command=lambda:time_test(int(text_field.get())), bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
+    button2.grid(row=1, column=1, padx=20, pady=10, ipadx=10, ipady=5)
+    
+    button3 = tk.Button(root, text="Classification", command=classify, bg="#333333", fg="#ffffff", font=("Arial", 12), activebackground="#222222", activeforeground="#ffffff")
+    button3.grid(row=2, column=1, padx=20, pady=10, ipadx=10, ipady=5)
+
+    # Run the main Tkinter loop
+    root.mainloop()
